@@ -1,0 +1,15 @@
+   let arr = [];
+      this.$http
+        .post("/api/weapon/showWeapon", {
+          pid: this.pid,
+        })
+        .then((res) => {
+          console.log(res.data);
+          res.data.forEach((element) => {
+            arr.push(element.weapon_pattenlist.split(","));
+            console.log(arr);
+          });
+        })
+        .catch(function (error) {
+          console.log("에러" + error);
+        });
