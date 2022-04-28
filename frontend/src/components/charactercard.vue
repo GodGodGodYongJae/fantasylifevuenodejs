@@ -61,7 +61,6 @@ export default {
       this.display_img = element.img;
       this.maxhp = element.hp;
       this.currentHP = element.hp;
-      console.log(element.img);
     });
   },
   name: "charactercard-component",
@@ -106,6 +105,15 @@ export default {
     },
     setCp(obj) {
       this.arr = obj;
+      console.log(this.arr);
+      this.arr.forEach((element) => {
+        this.display_name = element.name;
+        this.maxst = element.stemina;
+        this.currentStemina = element.stemina;
+        this.display_img = element.img;
+        this.maxhp = element.hp;
+        this.currentHP = element.hp;
+      });
     },
     turnCp(max) {
       let _vit = 0;

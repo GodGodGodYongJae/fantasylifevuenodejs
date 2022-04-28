@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button @click="showModal">b</button>
+    <!-- <button @click="showModal">b</button> -->
     <b-modal
       ref="attackModal"
       id="attack_modal"

@@ -33,7 +33,33 @@ export default {
   data() {
     return {
       movies: [],
+      statusflag: { none: 0, atk: 1, del: 2 },
+      attackflag: { atk: 0, def: 1, option: 2 },
+      crtstatusflag: 0,
+      crtattackflag: 0,
     };
+  },
+  methods: {
+    SelectStatus() {
+      if (this.crtstatusflag == this.statusflag.atk) this.attackFlagMethods();
+      else if (this.crtstatusflag == this.statusflag.del)
+        this.deleteFlagMethods();
+      console.log(this.crtstatusflag);
+    },
+    attackFlagMethods() {
+      if (this.crtattackflag == this.attackflag.atk)
+        this.onMessage("공격자를 선택하세요.");
+      else if (this.crtattackflag == this.attackflag.def)
+        this.onMessage("방어자를 선택하세요.");
+      else if (this.crtattackflag == this.attackflag.option) console.log("");
+      else return (this.crtattackflag = 3);
+      this.crtattackflag++;
+      return this.crtattackflag;
+    },
+    deleteFlagMethods() {},
+    onMessage(msg) {
+      alert(msg);
+    },
   },
 };
 </script>
