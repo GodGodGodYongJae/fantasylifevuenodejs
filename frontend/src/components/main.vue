@@ -143,6 +143,9 @@ export default {
       // this.players.push([{ name: "테스트", hp: 12, atk: 5, def: 3 }]);
       // console.log(this.players);
     },
+    GetidxPlayer(idx) {
+      return this.$refs.items[idx].getThisCard();
+    },
     deleted(index) {
       this.players.splice(index, 1);
       for (let i = 0; i < this.players.length; i++) {

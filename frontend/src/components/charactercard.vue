@@ -144,6 +144,9 @@ export default {
       });
       return _name;
     },
+    getThisCard() {
+      return this;
+    },
   },
 };
 </script>

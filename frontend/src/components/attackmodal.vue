@@ -6,6 +6,7 @@
       id="attack_modal"
       title="Attack "
       @cancel="init()"
+      @ok="init()"
     >
       <div class="typelist" v-if="displaynum == 0">
         <button
@@ -106,14 +107,17 @@ export default {
     // BattleManager.runPatten();
   }, // 컴포넌트가 생성되면 실행
   methods: {
+    test() {
+      console.log("ddd");
+    },
+    getPlayerindex() {
+      //console.log(this.index);
+      return this.index;
+      // return this.index;
+    },
     onSelect(val) {
       this.displaynum = 1;
       this.selectPatten = this.pattenList[val];
-      // console.log(this.pattenList[val]);
-      // let filter_dscrition = this.pattenList[val].patten_description;
-      // console.log(filter_dscrition.includes("'3성'"));
-      // console.log("패턴선택" + val);
-      // console.log(this.pattenList[val]);
     },
     onAppointSelect(val) {
       this.displaynum = 2;
@@ -130,7 +134,7 @@ export default {
 
       if (appoint >= rand) {
         this.isattack = true;
-        BattleManager.runPatten(parseInt(this.selectPatten.patten_id) - 1);
+        BattleManager.runPatten(this.selectPatten);
       } else {
         this.isattack = false;
       }
