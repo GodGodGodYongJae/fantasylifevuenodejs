@@ -42,6 +42,8 @@ class status {
       alert("방어자를 선택하세요.");
     }
     else if (this.crtattackflag == this.attackflag.option) {
+      this.mains.defencedataP = value;
+      this.mains.defenceindex = idx;
       this.mains.onShowAttackModal();
     }
     else return;
@@ -52,9 +54,6 @@ class status {
     this.mains.deleted(idx);
     console.log(idx);
   }
-
-
-
 
 
 }

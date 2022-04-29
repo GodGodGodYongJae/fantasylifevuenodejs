@@ -54,8 +54,19 @@
         </div>
         <div v-else-if="isattack == true" class="result_true">
           <p class="pattenicons">
-            <font-awesome-icon icon="fa-solid fa-star" />
+            <font-awesome-icon
+              v-for="item in currentAppoint"
+              icon="fa-solid fa-star"
+            />
+            <font-awesome-icon
+              style="color: black !important"
+              v-for="item in selectPatten.patten_ea - currentAppoint"
+              icon="fa-solid fa-star"
+            />
           </p>
+          <div class="damageHUD">
+            <p>총 데미지 : {{ Damage }}</p>
+          </div>
         </div>
       </div>
       <p class="my-4">Create Charater</p>
@@ -63,6 +74,8 @@
   </div>
 </template>
 <script>
+import bdm from "../assets/common/battledamageManager";
+let BattleManager = "";
 export default {
   name: "attack-modal", //컴포넌트 이름
   components: {}, //다른 컴포넌트 사용시 import하고, 배열로 저장
@@ -72,22 +85,31 @@ export default {
       pid: 0,
       weaponObj: [],
       pattenList: [],
-      selectPatten: 0,
+      selectPatten: [],
       displaynum: 0,
       attackAppoint: 0,
       selectedParts: 0,
       isattack: false,
+      currentAppoint: 0,
+      Damage: 0,
     };
   },
   props: {
     index: 0,
+    targetindex: 0,
     playerobj: [],
+    targetobj: [],
+    main: [],
   },
-  created() {}, // 컴포넌트가 생성되면 실행
+  created() {
+    BattleManager = new bdm.attackPatten(this);
+    // BattleManager.runPatten();
+  }, // 컴포넌트가 생성되면 실행
   methods: {
     onSelect(val) {
       this.displaynum = 1;
-      console.log(this.index);
+      this.selectPatten = this.pattenList[val];
+      // console.log(this.pattenList[val]);
       // let filter_dscrition = this.pattenList[val].patten_description;
       // console.log(filter_dscrition.includes("'3성'"));
       // console.log("패턴선택" + val);
@@ -102,21 +124,26 @@ export default {
       this.displaynum = 3;
       let appoint = 100 + parseInt(this.attackAppoint);
       let rand = Math.random() * 100;
+      this.currentAppoint = Math.floor(
+        Math.random() * parseInt(this.selectPatten.patten_ea) + 1
+      );
+
       if (appoint >= rand) {
         this.isattack = true;
+        BattleManager.runPatten(parseInt(this.selectPatten.patten_id) - 1);
       } else {
         this.isattack = false;
       }
       console.log(rand);
+      console.log(this.currentAppoint);
     },
     init() {
       this.displaynum = 0;
       this.attackAppoint = 0;
-      this.selectPatten = 0;
+      this.selectPatten = [];
       this.selectedParts = 0;
     },
     showModal() {
-      // console.log(this.playerobj);
       this.playerobj.forEach((element) => {
         this.pid = element.pid;
       });

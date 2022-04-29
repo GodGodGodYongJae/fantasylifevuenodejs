@@ -43,6 +43,9 @@
         ref="attackmodals"
         :playerobj="targetdataP"
         :index="targetindex"
+        :targetobj="defencedataP"
+        :targetindex="defenceindex"
+        :main="this"
       ></attack-modal>
     </footer>
   </div>
@@ -50,11 +53,7 @@
 
 <script>
 import msm from "../assets/common/mainStatusManager";
-let status = "non";
-let atk_status = "non";
 let stage_stemina = 0;
-let currentP = [];
-let targetP = [];
 let StatusManager = "";
 
 export default {
@@ -77,6 +76,8 @@ export default {
       players: [],
       targetdataP: [],
       targetindex: 0,
+      defencedataP: [],
+      defenceindex: 0,
     };
   },
   methods: {
