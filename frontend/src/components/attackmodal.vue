@@ -124,6 +124,10 @@ export default {
       if (val == 1) this.attackAppoint = -30;
       else if (val == 3) this.selectedParts = 99;
     },
+    randPartSelect() {
+      let rand = Math.random() * 5 + 1;
+      this.selectedParts = rand;
+    },
     onResultPage() {
       this.displaynum = 3;
       let appoint = 100 + parseInt(this.attackAppoint);
@@ -131,6 +135,8 @@ export default {
       this.currentAppoint = Math.floor(
         Math.random() * parseInt(this.selectPatten.patten_ea) + 1
       );
+
+      if (this.selectedParts == 99) this.randPartSelect();
 
       if (appoint >= rand) {
         this.isattack = true;

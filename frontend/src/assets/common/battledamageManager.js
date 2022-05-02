@@ -7,14 +7,16 @@ class attackPatten {
     ];
     this.cardidx = 0;
     this.costST = 0;
+    this.selectParts = 0;
+    this.PattenEA = 0;
   }
 
   runPatten(patten) {
     let Pid = patten.patten_id;
     this.costST = patten.patten_stemina;
-    console.log("runp");
+    this.PattenEA = parseInt(patten.patten_ea);
     this.cardidx = this.here.getPlayerindex();
-    // console.log(this.cardidx);
+    this.selectParts = parseInt(this.here.selectedParts);
     this.pattenlist[Pid - 1](this);
   }
 
@@ -22,23 +24,60 @@ class attackPatten {
     return this.here.main.GetidxPlayer(idx);
   }
 
-  getCostST() {
-    return this.costST;
-  }
   getWeapon() {
     return this.here.weaponObj;
   }
+  getAppointParts(parts) {
+    const _parts = parts;
+    switch (this.selectParts) {
+      case 1:
+        return _parts.head;
+        break;
+      case 2:
+        return _parts.shoulders;
+        break;
+      case 3:
+        return _parts.chest;
+        break;
+      case 4:
+        return _parts.waist;
+        break;
+      case 5:
+        return _parts.legs;
+        break;
+      default:
+        return null;
+        break;
+    }
+  }
 
-  // 중요 배열로 저장되었기 때문에 this here 등, 동기화가 안되어있음 할려면 here을 this로 넘기고
-  // here의 함수를 불러와야 함. here에서 곧바로 main으로 접근시 언디파인드가 나옴 .
-  daggerattack1(heres) {
-    console.log(heres.here.getPlayerindex());
-    let idx = heres.cardidx;
-    let Weapon = heres.getWeapon()[0];
-    this.characterCard = heres.getMainIdxP(idx);
-    this.characterCard.currentStemina -= heres.getCostST();
-    console.log(Weapon.atk);
-    // console.log(this.hM.test2());
+  damageResult(dmg) {
+    let appoint = this.here.currentAppoint;
+    let sumDmg = dmg * ((appoint * 100 / this.PattenEA) / 100);
+    return sumDmg;
+  }
+  daggerattack1(args) {
+    let here = args.here;
+    //Player.
+    let Weapon = args.getWeapon()[0];
+    let characterCard = args.getMainIdxP(args.cardidx);
+    let characterStataus = characterCard.arr[0];
+    //Target.
+    let TargetCard = args.getMainIdxP(here.targetindex);
+    let TargetStatus = TargetCard.arr[0];
+    // 스테미나 차감.
+    characterCard.currentStemina -= args.costST;
+    // charater atk + weapon atk 만큼 target에게 데미지 주기.
+    // 따로 함수화 하겠음.( 데미지 공식이 달라질 수 있으므로)
+    let sumAtk = args.damageResult(parseInt(characterStataus.atk + Weapon.atk));
+    const parts = JSON.parse(TargetStatus.ammor);
+    let sumDef = parseInt(args.getAppointParts(parts));
+    //데미지 계산
+    if (sumAtk > sumDef)
+      TargetCard.currentHP -= (sumAtk - sumDef);
+
+    here.Damage = (sumAtk - sumDef);
+
   }
 
   daggerattack2() {
