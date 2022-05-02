@@ -7,16 +7,23 @@
 
 class status {
   constructor(mains) {
-    this.statusflag = { none: 0, atk: 1, del: 2 };
+    this.statusflag = { none: 0, atk: 1, del: 2, range: 3, };
     this.crtstatusflag = 0;
     this.attackflag = { atk: 0, def: 1, option: 2 };
     this.crtattackflag = 0;
     this.mains = mains;
+    this.rangePlayerNum = 0;
 
   }
   getFlag() { return this.statusflag; }
 
-
+  onRangeAttack(val) {
+    this.crtstatusflag = 3;
+    this.rangePlayerNum = val;
+    alert("공격할 대상을 선택하세요.");
+    //모달 다시 켜주기
+    // this.mains.onShowAttackModal();
+  }
   onAttack() {
     this.crtstatusflag = 1;
     this.crtattackflag = 0;
@@ -31,6 +38,20 @@ class status {
       this.attackFlagMethods(value, idx);
     else if (this.crtstatusflag == this.statusflag.del)
       this.deleteFlagMethods(idx);
+    else if (this.crtstatusflag == this.statusflag.range)
+      this.rangeAttackFlagMethods(value);
+
+  }
+  rangeAttackFlagMethods(value) {
+    if (this.rangePlayerNum != 0) {
+      this.mains.rangetargedata.push(value);
+      this.rangePlayerNum--;
+      alert("공격할 대상을 선택하세요. 남은 횟수" + this.rangePlayerNum);
+    }
+    else {
+      this.mains.onReShowAttackModal();
+      console.log(this.mains.rangetargedata);
+    }
 
   }
   attackFlagMethods(value, idx) {

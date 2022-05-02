@@ -7,7 +7,7 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var weaponRouter = require('./routes/weapon');
-
+var equipRouter = require('./routes/equipment');
 
 var moviesRouter = require('./routes/movies');
 
@@ -31,7 +31,7 @@ app.use('/', indexRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/weapon', weaponRouter);
 app.use('/api/movies', moviesRouter);
-
+app.use('/api/equipment', equipRouter);
 
 // app.post('/regist', function (req, res) {
 //   var user = {

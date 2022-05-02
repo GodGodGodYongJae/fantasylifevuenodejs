@@ -4,11 +4,12 @@
     <b-modal
       ref="attackModal"
       id="attack_modal"
-      title="Attack "
+      :title="`안녕` + displaynum"
       @cancel="init()"
       @ok="init()"
     >
-      <div class="typelist" v-if="displaynum == 0">
+      <div class="typelist" v-if="displaynum == displayenum.state.selector">
+        <!-- <p>현재 Stemina : {{ chara }}</p> -->
         <button
           type="button"
           v-for="(item, key) in pattenList"
@@ -22,15 +23,28 @@
             />
           </p>
           {{ item.patten_name }}
+          <p>cost : {{ parseInt(item.patten_stemina * main.turn) }}</p>
           <p>{{ item.patten_description }}</p>
         </button>
       </div>
-      <div class="attackappointedlist" v-else-if="displaynum == 1">
+      <div
+        class="bulletReload"
+        v-else-if="displaynum == displayenum.state.rdSelector"
+      >
+        <button type="button" @click="onBulletReload()">Reload.</button>
+      </div>
+      <div
+        class="attackappointedlist"
+        v-else-if="displaynum == displayenum.state.appointselect"
+      >
         <button @click="onAppointSelect(1)">부위지정</button>
         <button @click="onAppointSelect(2)">강제지정</button>
         <button @click="onAppointSelect(3)">랜덤지정</button>
       </div>
-      <div class="percentagelist" v-else-if="displaynum == 2">
+      <div
+        class="percentagelist"
+        v-else-if="displaynum == displayenum.state.appointPercent"
+      >
         <div class="percentage_circle">
           전체 퍼센트 : {{ 100 + parseInt(attackAppoint) }} %
         </div>
@@ -48,8 +62,12 @@
           <option value="5">다리</option>
         </select>
         <button @click="onResultPage()">완료</button>
+        <button @click="searchRangeEquipment()">테스트</button>
       </div>
-      <div v-else-if="displaynum == 3" class="attackResultPage">
+      <div
+        v-else-if="displaynum == displayenum.state.result"
+        class="attackResultPage"
+      >
         <div v-if="isattack == false" class="result_faild">
           <p style="font-size: 2em">공격에 실패하였습니다.</p>
         </div>
@@ -65,6 +83,15 @@
               icon="fa-solid fa-star"
             />
           </p>
+          <div class="partHUD">
+            타격 부위 :
+            <p v-if="selectedParts == 1">머리</p>
+            <p v-else-if="selectedParts == 2">어깨</p>
+            <p v-else-if="selectedParts == 3">흉부</p>
+            <p v-else-if="selectedParts == 4">허리</p>
+            <p v-else-if="selectedParts == 5">다리</p>
+            <p v-else>{{ selectedParts }}</p>
+          </div>
           <div class="damageHUD">
             <p>총 데미지 : {{ Damage }}</p>
           </div>
@@ -87,12 +114,25 @@ export default {
       weaponObj: [],
       pattenList: [],
       selectPatten: [],
-      displaynum: 0,
+      displayenum: {
+        state: {
+          start: 0,
+          selector: 1,
+          rdSelector: 2,
+          magicSelector: 3,
+          appointselect: 4,
+          appointPercent: 5,
+          result: 6,
+        },
+      },
+      displaynum: 1,
       attackAppoint: 0,
       selectedParts: 0,
       isattack: false,
       currentAppoint: 0,
       Damage: 0,
+      targetEquipment: [],
+      targetsEquipment: [],
     };
   },
   props: {
@@ -107,29 +147,45 @@ export default {
     // BattleManager.runPatten();
   }, // 컴포넌트가 생성되면 실행
   methods: {
-    test() {
-      console.log("ddd");
+    ReShow() {
+      this.$refs.attackModal.show();
     },
     getPlayerindex() {
       //console.log(this.index);
       return this.index;
       // return this.index;
     },
+    onBulletReload() {
+      BattleManager.setBullet(true);
+      console.log(this);
+      this.$refs.attackModal.hide();
+      this.main.onTurn();
+    },
     onSelect(val) {
-      this.displaynum = 1;
       this.selectPatten = this.pattenList[val];
+      if (this.selectPatten.patten_range == 1)
+        this.displaynum = this.displayenum.state.appointselect;
+      else {
+        this.selectedParts = 99;
+        this.displaynum = this.displayenum.state.appointPercent;
+        this.getRangePlayer(this.selectPatten.patten_range);
+      }
+    },
+    getRangePlayer(val) {
+      this.main.onRangeAttack(val);
+      this.$refs.attackModal.hide();
     },
     onAppointSelect(val) {
-      this.displaynum = 2;
+      this.displaynum = this.displayenum.state.appointPercent;
       if (val == 1) this.attackAppoint = -30;
       else if (val == 3) this.selectedParts = 99;
     },
     randPartSelect() {
-      let rand = Math.random() * 5 + 1;
+      let rand = Math.floor(Math.random() * 5) + 1;
       this.selectedParts = rand;
     },
-    onResultPage() {
-      this.displaynum = 3;
+    async onResultPage() {
+      this.displaynum = this.displayenum.state.result;
       let appoint = 100 + parseInt(this.attackAppoint);
       let rand = Math.random() * 100;
       this.currentAppoint = Math.floor(
@@ -137,12 +193,14 @@ export default {
       );
 
       if (this.selectedParts == 99) this.randPartSelect();
+      await this.searchEquipment();
 
       if (appoint >= rand) {
         this.isattack = true;
         BattleManager.runPatten(this.selectPatten);
       } else {
         this.isattack = false;
+        BattleManager.runFaild(this.selectPatten);
       }
       console.log(rand);
       console.log(this.currentAppoint);
@@ -154,6 +212,7 @@ export default {
       this.selectedParts = 0;
     },
     showModal() {
+      this.init();
       this.playerobj.forEach((element) => {
         this.pid = element.pid;
       });
@@ -163,6 +222,14 @@ export default {
         })
         .then((res) => {
           this.weaponObj = res.data;
+          if (this.weaponObj[0].weapon_type == "ad")
+            this.displaynum = this.displayenum.state.selector;
+          else if (this.weaponObj[0].weapon_type == "rd")
+            if (BattleManager.getBullet())
+              this.displaynum = this.displayenum.state.selector;
+            else this.displaynum = this.displayenum.state.rdSelector;
+          else if (this.weaponObj[0].weapon_type == "md")
+            this.displaynum = this.displayenum.state.magicSelector;
           this.searchWeapons();
         })
         .catch(function (error) {
@@ -178,10 +245,8 @@ export default {
       console.log("searchWeapon Start .. ");
       this.weaponObj.forEach((element) => {
         arr.push(element.weapon_pattenlist.split(","));
-        // console.log(arr);
       });
 
-      // console.log(parseInt(arr[0]));
       for (let index = 0; index < arr[0].length; index++) {
         arr2.push(arr[0][index]);
       }
@@ -192,11 +257,69 @@ export default {
         })
         .then((res) => {
           this.pattenList = res.data;
-          console.log(this.pattenList);
         })
         .catch(function (error) {
           console.log("Serach Patten error :" + error);
         });
+    },
+    async searchEquipment() {
+      // targetEquipment
+
+      var response = await this.$http
+        .post("/api/equipment/search", {
+          pid: this.targetobj[0].pid,
+          part: parseInt(this.selectedParts),
+        })
+        .then((res) => {
+          this.targetEquipment = res.data[0];
+          if (this.targetEquipment == undefined) {
+            this.targetEquipment = { def: 0 };
+          }
+        })
+        .catch(function (error) {
+          console.log("Equipment Search Error" + error);
+        });
+    },
+    searchRangeEquipment() {
+      let arr = this.main.rangetargedata;
+      let arr2 = [];
+      let arr3 = [];
+      console.log("searchRange Equipement Start .. ");
+
+      for (let index = 0; index < arr.length; index++) {
+        arr2.push(arr[index][0]);
+      }
+      arr2.forEach((element) => {
+        //부위 까지 랜덤.. 힘들다!
+        let rand = Math.floor(Math.random() * 5 + 1);
+        arr3.push([element.pid, rand]);
+      });
+      console.log(arr3);
+      this.$http
+        .post("/api/equipment/searchRange", {
+          pid: arr3,
+        })
+        .then((res) => {
+          //여기 2022-05-02 일단 데이터를 안줌. 해야댐
+          console.log(res.data);
+        })
+        .catch(function (error) {
+          console.log("Equipment Search Error" + error);
+        });
+      // var response = await this.$http
+      //   .post("/api/equipment/searchRange", {
+      //     pid: this.targetobj[0].pid,
+      //     part: parseInt(this.selectedParts),
+      //   })
+      //   .then((res) => {
+      //     this.targetEquipment = res.data[0];
+      //     if (this.targetEquipment == undefined) {
+      //       this.targetEquipment = { def: 0 };
+      //     }
+      //   })
+      //   .catch(function (error) {
+      //     console.log("Equipment Search Error" + error);
+      //   });
     },
   }, // 컴포넌트 내에서 사용할 메소드 정의
 };
@@ -218,6 +341,9 @@ export default {
   font-size: 20px;
   color: lightskyblue;
   margin-bottom: 0px !important;
+}
+.partHUD {
+  display: flex;
 }
 .percentagelist {
   display: flex;

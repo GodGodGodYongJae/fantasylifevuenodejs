@@ -96,6 +96,7 @@ export default {
       display_name: "",
       display_img: "",
       isTurn: false,
+      isBullet: false,
     };
   },
   methods: {

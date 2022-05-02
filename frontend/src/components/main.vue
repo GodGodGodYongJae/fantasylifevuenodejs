@@ -76,8 +76,10 @@ export default {
       players: [],
       targetdataP: [],
       targetindex: 0,
+      rangetargedata: [],
       defencedataP: [],
       defenceindex: 0,
+      turn: 1,
     };
   },
   methods: {
@@ -90,9 +92,14 @@ export default {
       // status = "del";
       // alert("삭제할 대상을 선택하세요.");
     },
+    onRangeAttack(val) {
+      this.rangetargedata = [];
+      StatusManager.onRangeAttack(val);
+    },
     onTurn() {
       let temp_stemina = 0;
       let _index = [];
+      this.turn = 1;
       this.players.forEach((element) => {
         // console.log(element);
         element.forEach((element) => {
@@ -126,6 +133,9 @@ export default {
     },
     onShowAttackModal() {
       this.$refs.attackmodals.showModal();
+    },
+    onReShowAttackModal() {
+      this.$refs.attackmodals.ReShow();
     },
     SelectCard(value, idx) {
       StatusManager.SelectStatus(value, idx);

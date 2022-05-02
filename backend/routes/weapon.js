@@ -18,7 +18,7 @@ router.post('/showWeapon', function (req, result) {
 });
 
 router.post('/search', function (req, res) {
-  connection.query('SELECT * FROM test_crud.useWeapon uw left join weapon w on uw.pid = w.weapon_id where uw.pid = ? and uw.use = 1;', req.body.pid, function (err, result) {
+  connection.query('SELECT * FROM test_crud.useWeapon uw left join weapon w on uw.wid = w.weapon_id where uw.pid = ? and uw.use = 1;', req.body.pid, function (err, result) {
     if (err) {
       console.error(err);
       throw err;
@@ -31,7 +31,6 @@ router.post('/searchPatten', function (req, res) {
   var pattenArr = req.body.arr;
   var sql = 'or patten_id = ?';
   var sqls = '';
-  console.log(pattenArr);
   pattenArr.forEach(element => {
     sqls += mysql.format(sql, element);
   });
