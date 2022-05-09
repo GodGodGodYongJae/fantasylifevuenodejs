@@ -9,7 +9,7 @@ router.get('/', function (req, res, next) {
 });
 
 router.post('/search', function (req, res) {
-  connection.query('SELECT * FROM test_crud.useEquipment ue left join equipment e on ue.eid = e.equipment_id where ue.pid = ? and ue.use = 1 and e.equipment_part = ?;', [req.body.pid, req.body.part], function (err, result) {
+  connection.query('SELECT * FROM test_crud.useEquipment ue left join equipment e on ue.eid = e.equipment_id where ue.pid = ? and ue.use = 1;', req.body.pid, function (err, result) {
     if (err) {
       console.error(err);
       throw err;
@@ -29,6 +29,7 @@ router.post('/searchRange', function (req, res) {
   console.log(sqls);
 
   var querysql = `SELECT * FROM test_crud.useEquipment ue left join equipment e on ue.eid = e.equipment_id where (ue.pid = 0 and ue.use = 0 and e.equipment_part = 0)`;
+  console.log(querysql + sqls);
   connection.query(querysql + sqls, function (err, result) {
     if (err) {
       console.log(err);

@@ -41,9 +41,7 @@
       hello world
       <attack-modal
         ref="attackmodals"
-        :playerobj="targetdataP"
         :index="targetindex"
-        :targetobj="defencedataP"
         :targetindex="defenceindex"
         :main="this"
       ></attack-modal>

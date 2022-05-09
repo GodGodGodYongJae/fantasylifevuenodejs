@@ -39,18 +39,17 @@ class status {
     else if (this.crtstatusflag == this.statusflag.del)
       this.deleteFlagMethods(idx);
     else if (this.crtstatusflag == this.statusflag.range)
-      this.rangeAttackFlagMethods(value);
+      this.rangeAttackFlagMethods(idx);
 
   }
-  rangeAttackFlagMethods(value) {
+  rangeAttackFlagMethods(idx) {
     if (this.rangePlayerNum != 0) {
-      this.mains.rangetargedata.push(value);
+      this.mains.rangetargedata.push(idx);
       this.rangePlayerNum--;
       alert("공격할 대상을 선택하세요. 남은 횟수" + this.rangePlayerNum);
     }
     else {
       this.mains.onReShowAttackModal();
-      console.log(this.mains.rangetargedata);
     }
 
   }

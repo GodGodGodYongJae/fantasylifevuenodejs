@@ -61,7 +61,10 @@ export default {
       this.display_img = element.img;
       this.maxhp = element.hp;
       this.currentHP = element.hp;
+      this.pid = element.pid;
     });
+    this.searchWeapon();
+    this.searchEquipment();
   },
   name: "charactercard-component",
   props: {
@@ -86,7 +89,7 @@ export default {
   },
   data() {
     return {
-      value: 0,
+      pid: 0,
       arr: this.playerobj,
       currentStemina: 0,
       currentTurn: 0,
@@ -97,11 +100,14 @@ export default {
       display_img: "",
       isTurn: false,
       isBullet: false,
+      Weapon: [],
+      Weapon_type: "",
+      Weapon_PattenList: [],
+      Equipment: [],
     };
   },
   methods: {
     showTitle() {
-      // console.log(this.arr);
       this.$emit("SelectCard", this.arr, this.index);
     },
     setCp(obj) {
@@ -147,6 +153,54 @@ export default {
     },
     getThisCard() {
       return this;
+    },
+    searchWeapon() {
+      this.$http
+        .post("/api/weapon/search", {
+          pid: this.pid,
+        })
+        .then((res) => {
+          this.Weapon = res.data;
+          this.Weapon_type = this.Weapon[0].weapon_type; // 타입을 정해준다. attackmodal에서 타입에따라, 보여지는 화면이 달라지기에
+          this.searchWeaponPattenList();
+        });
+    },
+
+    searchWeaponPattenList() {
+      let _arr = [];
+      let _arr2 = [];
+      this.Weapon_PattenList = [];
+      console.log("search_Weapon Start... ");
+      this.Weapon.forEach((element) => {
+        _arr.push(element.weapon_pattenlist.split(","));
+      });
+      for (let index = 0; index < _arr[0].length; index++) {
+        _arr2.push(_arr[0][index]);
+      }
+      this.$http
+        .post("/api/weapon/searchPatten", {
+          arr: _arr2,
+        })
+        .then((res) => {
+          this.Weapon_PattenList = res.data;
+          // console.log("Patten", this.Weapon_PattenList);
+        })
+        .catch(function (error) {
+          // console.log("PattenSerach : " + error);
+        });
+    },
+    searchEquipment() {
+      this.$http
+        .post("/api/equipment/search", {
+          pid: this.pid,
+        })
+        .then((res) => {
+          this.Equipment = res.data;
+          // console.log("Equipment : ", this.Equipment);
+        })
+        .catch(function (error) {
+          // console.log("Equipment Search : " + error);
+        });
     },
   },
 };
