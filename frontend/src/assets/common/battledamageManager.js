@@ -198,14 +198,13 @@ class attackPatten {
 
   shotbowattack1(args) {
     let here = args.here;
-    //Weapon.
-    let Weapon = args.getWeapon()[0];
+
     // 스테미나 차감.
-    args.characterCard.currentStemina -= args.costST;
+    args.setCurrentPlayerStemina(args.costST);
     // charater atk + weapon atk 만큼 target에게 데미지 주기.
     // 따로 함수화 하겠음.( 데미지 공식이 달라질 수 있으므로)
-    let sumAtk = args.damageResult(parseInt(args.characterStataus.atk + (Weapon.atk + Weapon.weapon_atk)));
-    let sumDef = parseInt(args.getAppointParts(args.TargetAmmor) + args.appointAmmor.def);
+    let sumAtk = args.damageResult(args.getAtkDmg());
+    let sumDef = args.getTargetDef(args.selectParts);
     //데미지 계산
     if (sumAtk > sumDef)
       args.TargetObj.currentHP -= (sumAtk - sumDef);
@@ -259,11 +258,13 @@ class attackPatten {
     if (sumAtk > sumDef)
       args.TargetObj.currentHP -= (sumAtk - sumDef);
     here.Damage = (sumAtk - sumDef);
+    let msg_part = args.getAppointPartsString(args.selectParts);
     args.msg.push(`${args.characterStataus.name}이가 ${args.TargetStatus.name}의 ${msg_part}를 공격하여`);
     args.msg.push(`최종적으로 ${args.TargetStatus.name} 에게, ${sumAtk - sumDef}만큼 피해를 입혔습니다!`);
     //ability - 3성 이상 떴을 때 장전 
-    if (here.currentAppoint < 3) {
-      grgs.setBullet(false);
+
+    if (here.currentStar < 3) {
+      args.setBullet(false);
     }
     else args.msg.push(`${here.currentStar}성 공격을 성공했기에, 다음 공격은 장전하지 않아도 공격할 수 있습니다. `)
   }

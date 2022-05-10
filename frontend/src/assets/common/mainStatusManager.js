@@ -7,7 +7,7 @@
 
 class status {
   constructor(mains) {
-    this.statusflag = { none: 0, atk: 1, del: 2, range: 3, };
+    this.statusflag = { none: 0, atk: 1, del: 2, range: 3, magic: 4 };
     this.crtstatusflag = 0;
     this.attackflag = { atk: 0, def: 1, option: 2 };
     this.crtattackflag = 0;
@@ -29,6 +29,11 @@ class status {
     this.crtattackflag = 0;
     this.SelectStatus()
   }
+  onMagic() {
+    this.crtstatusflag = 4;
+    this.crtattackflag = 0;
+    this.SelectStatus()
+  }
   onDeleted() {
     this.crtstatusflag = 2;
     this.crtattackflag = 0;
@@ -40,6 +45,18 @@ class status {
       this.deleteFlagMethods(idx);
     else if (this.crtstatusflag == this.statusflag.range)
       this.rangeAttackFlagMethods(idx);
+    else if (this.crtstatusflag == this.statusflag.magic)
+      this.ArcanerunicMethods(idx);
+
+  }
+  ArcanerunicMethods(idx) {
+    if (this.crtattackflag == this.attackflag.atk)
+      alert("룬어를 영창할 대상을 선택해주세요.");
+    else if (this.crtattackflag == this.attackflag.def) {
+      this.mains.onShowMagicModal();
+    }
+    else return;
+    this.crtattackflag++;
 
   }
   rangeAttackFlagMethods(idx) {

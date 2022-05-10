@@ -26,12 +26,14 @@ Vue.config.productionTip = false
 import CharacterCard from './components/charactercard'
 import Modal from './components/modal'
 import AttackModal from './components/attackmodal'
+import MagicModal from './components/magicmodal'
 import imageupload from './components/imageuploadpage'
 import "./store/fontAwesomeIcon";
 
 Vue.component(CharacterCard.name, CharacterCard);
 Vue.component(Modal.name, Modal);
 Vue.component(AttackModal.name, AttackModal);
+Vue.component(MagicModal.name, MagicModal);
 Vue.component(imageupload.name, imageupload);
 import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.min.css'

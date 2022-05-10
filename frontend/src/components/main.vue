@@ -10,6 +10,7 @@
       <button @click="onAttack">a</button>
       <button v-b-modal.modal-1>b</button>
       <button @click="onDelete">c</button>
+      <button @click="onMagic">m</button>
       <button @click="onTurn">Turn</button>
     </header>
     <okok-modal @CreatePlayer="CreatePlayer"></okok-modal>
@@ -45,6 +46,7 @@
         :targetindex="defenceindex"
         :main="this"
       ></attack-modal>
+      <magic-modal ref="magicmodals" :index="targetindex"></magic-modal>
     </footer>
   </div>
 </template>
@@ -83,6 +85,9 @@ export default {
   methods: {
     onAttack() {
       StatusManager.onAttack();
+    },
+    onMagic() {
+      StatusManager.onMagic();
     },
     onDelete() {
       alert("삭제할 대상을 선택해주세용.");
@@ -131,6 +136,9 @@ export default {
     },
     onShowAttackModal() {
       this.$refs.attackmodals.showModal();
+    },
+    onShowMagicModal() {
+      this.$refs.magicmodals.showModal();
     },
     onReShowAttackModal() {
       this.$refs.attackmodals.ReShow();
