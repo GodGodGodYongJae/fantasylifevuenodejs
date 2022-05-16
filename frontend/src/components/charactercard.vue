@@ -48,6 +48,18 @@
         </b-progress-bar>
       </b-progress>
     </div>
+    <div class="currentHUD">
+      <b-progress :max="maxmp" height="2rem">
+        <b-progress-bar
+          style="background-color: lightskyblue !important"
+          :value="currentMP"
+        >
+          <span
+            >MP: <strong>{{ currentMP.toFixed(2) }} / {{ maxmp }}</strong></span
+          >
+        </b-progress-bar>
+      </b-progress>
+    </div>
   </div>
 </template>
 
@@ -62,7 +74,10 @@ export default {
       this.maxhp = element.hp;
       this.currentHP = element.hp;
       this.pid = element.pid;
+      this.currentMP = element.mp;
+      this.maxmp = element.mp;
     });
+    this.searchRunic();
     this.searchWeapon();
     this.searchEquipment();
   },
@@ -95,7 +110,9 @@ export default {
       currentTurn: 0,
       maxhp: 0,
       maxst: 0,
+      maxmp: 0,
       currentHP: 0,
+      currentMP: 0,
       display_name: "",
       display_img: "",
       isTurn: false,
@@ -104,6 +121,8 @@ export default {
       Weapon_type: "",
       Weapon_PattenList: [],
       Equipment: [],
+      Runic: [],
+      selectRunic: [],
     };
   },
   methods: {
@@ -114,6 +133,7 @@ export default {
       this.arr = obj;
       console.log(this.arr);
       this.arr.forEach((element) => {
+        this.pid = element.pid;
         this.display_name = element.name;
         this.maxst = element.stemina;
         this.currentStemina = element.stemina;
@@ -133,11 +153,19 @@ export default {
     getCurrentTurn() {
       return this.isTurn;
     },
-    setSetCurrentStemina() {
+    setTurnCurrentStemina() {
       this.playerobj.forEach((element) => {
         this.currentStemina += Math.floor(parseInt(element.vit) * 0.5);
         if (this.currentStemina > parseInt(element.stemina)) {
           this.currentStemina = parseInt(element.stemina);
+        }
+      });
+    },
+    setTurnCurrentMP() {
+      this.playerobj.forEach((element) => {
+        this.currentMP += Math.floor(parseInt(element.vit) * 0.5);
+        if (this.currentMP > parseInt(element.mp)) {
+          this.currentMP = parseInt(element.mp);
         }
       });
     },
@@ -165,7 +193,19 @@ export default {
           this.searchWeaponPattenList();
         });
     },
-
+    searchRunic() {
+      this.$http
+        .post("/api/magical/runicsearch", {
+          pid: this.pid,
+        })
+        .then((res) => {
+          if (res.data[0] == undefined) return;
+          let _arr = res.data;
+          _arr.forEach((element) => {
+            this.Runic.push(element.userunic_rid.split(","));
+          });
+        });
+    },
     searchWeaponPattenList() {
       let _arr = [];
       let _arr2 = [];

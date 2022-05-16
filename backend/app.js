@@ -10,6 +10,7 @@ var weaponRouter = require('./routes/weapon');
 var equipRouter = require('./routes/equipment');
 
 var moviesRouter = require('./routes/movies');
+var magicalRouter = require("./routes/magical");
 
 
 // Connect
@@ -32,6 +33,7 @@ app.use('/api/users', usersRouter);
 app.use('/api/weapon', weaponRouter);
 app.use('/api/movies', moviesRouter);
 app.use('/api/equipment', equipRouter);
+app.use('/api/magical', magicalRouter);
 
 // app.post('/regist', function (req, res) {
 //   var user = {

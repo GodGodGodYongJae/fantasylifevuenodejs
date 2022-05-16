@@ -46,7 +46,7 @@
         :targetindex="defenceindex"
         :main="this"
       ></attack-modal>
-      <magic-modal ref="magicmodals" :index="targetindex"></magic-modal>
+      <magic-modal ref="magicmodals" :main="this"></magic-modal>
     </footer>
   </div>
 </template>
@@ -126,7 +126,8 @@ export default {
         );
         for (let i = 0; i < this.players.length; i++) {
           if (i == _index) continue;
-          this.$refs.items[i].setSetCurrentStemina();
+          this.$refs.items[i].setTurnCurrentStemina();
+          this.$refs.items[i].setTurnCurrentMP();
         }
       } else {
         this.onTurn();

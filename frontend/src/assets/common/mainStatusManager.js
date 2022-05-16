@@ -50,9 +50,11 @@ class status {
 
   }
   ArcanerunicMethods(idx) {
-    if (this.crtattackflag == this.attackflag.atk)
+    if (this.crtattackflag == this.attackflag.atk) {
       alert("룬어를 영창할 대상을 선택해주세요.");
+    }
     else if (this.crtattackflag == this.attackflag.def) {
+      this.mains.targetindex = idx;
       this.mains.onShowMagicModal();
     }
     else return;
