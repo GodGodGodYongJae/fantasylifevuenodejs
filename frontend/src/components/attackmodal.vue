@@ -16,13 +16,13 @@
           :key="key"
           @click="onSelect(key)"
         >
+          {{ item.patten_name }}
           <p class="pattenicons">
             <font-awesome-icon
               v-for="icon in item.patten_ea"
               icon="fa-solid fa-star"
             />
           </p>
-          {{ item.patten_name }}
           <p>cost : {{ parseInt(item.patten_stemina * main.turn) }}</p>
           <p>{{ item.patten_description }}</p>
         </button>

@@ -50,10 +50,14 @@ router.post('/playerArcaneSearch', function (req, res) {
     })
     // res.send(ArcaneList[0][0]);
   });
-  router.post('/SearchPatten', function (req, res) {
-    console.log("SP");
-    res.send("hello");
+
+});
+
+router.post('/SearchPatten', function (req, res) {
+  connection.query("SELECT * FROM arcanePatten where ap_aid = ? and ap_controll <= ?", [req.body.aid, req.body.con], function (err, result) {
+    res.send(result);
   })
+
 });
 
 module.exports = router;

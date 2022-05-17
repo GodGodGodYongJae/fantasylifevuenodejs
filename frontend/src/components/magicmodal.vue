@@ -15,6 +15,22 @@
           cost : {{ item.runic_cost + research * 2 }}
         </button>
       </div>
+      <div class="patten" v-else-if="displaynum == displayenum.patten">
+        <button type="button" v-for="(item, key) in MagicPatten" :key="key">
+          {{ item.ap_name }}
+          <p class="pattenicons">
+            <font-awesome-icon
+              v-for="icon in item.ap_stella"
+              icon="fa-solid fa-star"
+            />
+          </p>
+
+          <p>
+            {{ item.ap_description }}
+          </p>
+        </button>
+      </div>
+      <!-- 푸터영역 -->
       <div
         v-if="displaynum == displayenum.select"
         slot="modal-footer"
@@ -43,12 +59,14 @@ export default {
         start: 0,
         select: 1,
         arcane: 2,
+        patten: 3,
       },
       displaynum: 0,
       research: 0,
       resultArcane: [],
       resultArcanePatten: [],
       AracaneList: [],
+      MagicPatten: [],
     };
   },
   props: {
@@ -130,14 +148,16 @@ export default {
           this.AracaneList = res.data;
         });
     },
-    SearchArcanePatten(id) {
-      console.log("PAtten lr");
+    SearchArcanePatten(id, runic) {
       this.$http
         .post("/api/magical/SearchPatten", {
           aid: id,
+          con: runic[1],
         })
         .then((res) => {
-          console.log(res.data);
+          this.MagicPatten = [];
+          this.MagicPatten = res.data;
+          MagicManager.PattenStrReplace(runic);
         });
     },
     SerachArcane2(active, controll, form, Temper) {
@@ -158,6 +178,22 @@ export default {
   font-family: "RunicSansPlainPlain" !important;
   font-weight: normal;
   font-style: normal;
+}
+.patten {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.patten button {
+  width: 100%;
+}
+
+.pattenicons {
+  font-size: 20px;
+  color: lightskyblue;
+  margin-bottom: 0px !important;
 }
 .foot {
   width: 100%;

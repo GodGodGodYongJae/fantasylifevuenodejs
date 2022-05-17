@@ -1,5 +1,7 @@
+import rep from "./replacePatten";
 class magicPatten {
   constructor(here) {
+    this.repatten = new rep.replace();
     this.here = here;
     this.magiclist = [
       this.magicArrow,
@@ -11,6 +13,7 @@ class magicPatten {
   setCurrenMp(num) {
     this.here.charaterObj.currentMP -=
       this.here.runicRand[num].runic_cost + this.here.research * 2;
+
   }
   // this player cost Mp true or false
   useCurrentMP(num) {
@@ -90,6 +93,7 @@ class magicPatten {
       alert("x");
       return;
     }
+
     this.SearchArcane(combineRunic)
     // console.log(combineRunic);
   }
@@ -97,9 +101,18 @@ class magicPatten {
   SearchArcane(Runic) {
     let arcane = this.here.AracaneList;
     arcane.forEach((element) => {
-      if (element.arcane_id == Runic[2]) this.magiclist[Runic[2] - 1](Runic, element, this.here);
+      if (element.arcane_id == Runic[2]) this.here.SearchArcanePatten(element.arcane_id, Runic);
+      // this.magiclist[Runic[2] - 1](Runic, element, this.here);
 
     });
+  }
+
+  PattenStrReplace(runic) {
+    this.here.MagicPatten.forEach(element => {
+      this.repatten.runReplacePatten(element.ap_id, element, runic);
+    });
+    this.here.displaynum = this.here.displayenum.patten;
+    // console.log(this.here.MagicPatten);
   }
 
   magicArrow(Runic, magic, here) {
@@ -110,6 +123,8 @@ class magicPatten {
     let replaced_str = str.replace(`(1)`, "굳");
     console.log("replaced", replaced_str);
   }
+
+
 
 
 }
