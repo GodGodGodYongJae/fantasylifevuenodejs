@@ -22,11 +22,13 @@ class replace {
   magicArrow1(_here) {
     let here = _here;
     let str = here.mp.ap_description;
-    let apRange = (here.runic[0] * 2 % 2 === 0) ? parseInt(here.runic[0] * 2 + 1) : parseInt(here.runic[0] * 2);
+    let apRange = (here.runic[1] * 2 % 2 === 0) ? parseInt(here.runic[1] * 2 + 1) : parseInt(here.runic[1] * 2);
     let apRange2 = (here.runic[0] % 2 === 0) ? parseInt(here.runic[0] + 1) : parseInt(here.runic[0]);
+    let apDamage = here.runic[0] + (here.runic[0] * 0.75);
     let replace_str = str
-      .replace(/(1)/g, apRange)
-      .replace(/(2)/g, apRange2);
+      .replace(/-1-/g, apRange)
+      .replace(/-2-/g, apRange2)
+      .replace(/-3-/g, apDamage);
     here.mp.ap_description = replace_str;
 
     console.log("m1")

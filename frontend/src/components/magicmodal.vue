@@ -16,7 +16,12 @@
         </button>
       </div>
       <div class="patten" v-else-if="displaynum == displayenum.patten">
-        <button type="button" v-for="(item, key) in MagicPatten" :key="key">
+        <button
+          type="button"
+          v-for="(item, key) in MagicPatten"
+          :key="key"
+          @click="onSelect(key)"
+        >
           {{ item.ap_name }}
           <p class="pattenicons">
             <font-awesome-icon
@@ -30,6 +35,16 @@
           </p>
         </button>
       </div>
+      <div class="percentagelist" v-else-if="displaynum == displayenum.appoint">
+        <div class="percentage_circle">
+          전체 퍼센트 : {{ 100 + parseInt(attackAppoint) }} %
+        </div>
+        가산 %
+        <label style="display: flex">
+          <input type="number" placeholder="가산%" v-model="attackAppoint" />
+          %
+        </label>
+      </div>
       <!-- 푸터영역 -->
       <div
         v-if="displaynum == displayenum.select"
@@ -37,6 +52,14 @@
         class="foot"
       >
         <b-btn variant="primary" @click="randRunicRand(1)">ReMind</b-btn>
+        <b-btn variant="success " @click="OncombineRunic()">OK</b-btn>
+      </div>
+      <div
+        v-if="displaynum == displayenum.appoint"
+        slot="modal-footer"
+        class="foot"
+      >
+        <b-btn variant="primary" @click="randRunicRand(1)">Cancle</b-btn>
         <b-btn variant="success " @click="OncombineRunic()">OK</b-btn>
       </div>
     </b-modal>
@@ -60,6 +83,7 @@ export default {
         select: 1,
         arcane: 2,
         patten: 3,
+        appoint: 4,
       },
       displaynum: 0,
       research: 0,
@@ -67,6 +91,9 @@ export default {
       resultArcanePatten: [],
       AracaneList: [],
       MagicPatten: [],
+      attackAppoint: 0,
+      SelectPatten: [],
+      currentStar: 0,
     };
   },
   props: {
@@ -87,7 +114,10 @@ export default {
       this.$refs["magicModal"].show();
     },
     closeModal() {},
-
+    onSelect(val) {
+      this.SelectPatten = this.MagicPatten[val];
+      this.displaynum = this.displayenum.appoint;
+    },
     runicDataLoad() {
       this.index = this.main.targetindex;
       this.charaterObj = this.main.GetidxPlayer(this.index);
@@ -195,6 +225,26 @@ export default {
   color: lightskyblue;
   margin-bottom: 0px !important;
 }
+
+.percentagelist {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.percentage_circle {
+  width: 200px;
+  height: 200px;
+  border-radius: 100px;
+  background-color: lightcoral;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
 .foot {
   width: 100%;
   display: flex;
